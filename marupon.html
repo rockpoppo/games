@@ -148,35 +148,42 @@ const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-mo
 
 /* ---------- でてくるもの ---------- */
 const coin = (fill, rim, o = {}) => Object.assign({ fill, rim }, o);
+const E = (id, name, price, emoji) => ({ id, name, price, emoji });
+/* まるの大きさ(small/mid/big) × まる度のランク(0〜5)。同じランクの中からランダムに1つ出る。 */
 const TABLE = {
   small: [
-    { id: 'yen1',  name: 'まがった1円玉', price: 1n, coin: coin('#dfe4e8', '#8f99a3', { label: '1', bent: true }) },
-    { id: 'yen5',  name: '5円玉',   price: 5n,   coin: coin('#e0b84c', '#94731c', { hole: true }) },
-    { id: 'yen50', name: '50円玉',  price: 50n,  coin: coin('#d9dee3', '#858f99', { hole: true }) },
-    { id: 'yen100',name: '100円玉', price: 100n, coin: coin('#d9dee3', '#7d8791', { label: '100' }) },
-    { id: 'yen500',name: '500円玉', price: 500n, coin: coin('#e6cb6e', '#8f7424', { label: '500', inner: '#dde2e6' }) },
-    { id: 'medal', name: '金メダル', price: 1000000n, emoji: '🥇' }
+    [ { id: 'yen1', name: 'まがった1円玉', price: 1n, coin: coin('#dfe4e8', '#8f99a3', { label: '1', bent: true }) },
+      E('bubble', 'しゃぼん玉', 0n, '🫧'), E('naruto', 'なると', 15n, '🍥') ],
+    [ { id: 'yen5', name: '5円玉', price: 5n, coin: coin('#e0b84c', '#94731c', { hole: true }) },
+      E('candy', 'あめ玉', 10n, '🍬'), E('berry', 'ブルーベリー', 20n, '🫐') ],
+    [ { id: 'yen50', name: '50円玉', price: 50n, coin: coin('#d9dee3', '#858f99', { hole: true }) },
+      E('egg', 'たまご', 30n, '🥚'), E('senbei', 'せんべい', 40n, '🍘') ],
+    [ { id: 'yen100', name: '100円玉', price: 100n, coin: coin('#d9dee3', '#7d8791', { label: '100' }) },
+      E('cookie', 'クッキー', 80n, '🍪'), E('yoyo', 'ヨーヨー', 700n, '🪀') ],
+    [ { id: 'yen500', name: '500円玉', price: 500n, coin: coin('#e6cb6e', '#8f7424', { label: '500', inner: '#dde2e6' }) },
+      E('baseball', 'やきゅうボール', 800n, '⚾'), E('ring', 'ゆびわ', 300000n, '💍') ],
+    [ E('medal', '金メダル', 1000000n, '🥇'), E('goldcoin', 'むかしの金貨', 2000000n, '🪙') ]
   ],
   mid: [
-    { id: 'potato', name: 'じゃがいも', price: 30n, emoji: '🥔' },
-    { id: 'donut',  name: 'ドーナツ',   price: 150n, emoji: '🍩' },
-    { id: 'ball',   name: 'ボール',     price: 1000n, emoji: '⚽' },
-    { id: 'pizza',  name: 'ピザ',       price: 2000n, emoji: '🍕' },
-    { id: 'bowl',   name: 'ボウリングの球', price: 15000n, emoji: '🎳' },
-    { id: 'crystal',name: '水晶玉',     price: 3000000n, emoji: '🔮' }
+    [ E('potato', 'じゃがいも', 30n, '🥔'), E('onion', 'たまねぎ', 60n, '🧅') ],
+    [ E('donut', 'ドーナツ', 150n, '🍩'), E('mikan', 'みかん', 50n, '🍊'), E('burger', 'ハンバーガー', 450n, '🍔') ],
+    [ E('ball', 'ボール', 1000n, '⚽'), E('pancake', 'ホットケーキ', 600n, '🥞'), E('frisbee', 'フリスビー', 1200n, '🥏') ],
+    [ E('pizza', 'ピザ', 2000n, '🍕'), E('suika', 'すいか', 2500n, '🍉'), E('basket', 'バスケットボール', 4000n, '🏀') ],
+    [ E('bowl', 'ボウリングの球', 15000n, '🎳'), E('mirror', 'ミラーボール', 20000n, '🪩'), E('taiko', 'たいこ', 30000n, '🥁') ],
+    [ E('crystal', '水晶玉', 3000000n, '🔮'), E('ufo', 'UFO', 50000000n, '🛸') ]
   ],
   big: [
-    { id: 'onigiri',name: 'つぶれたおにぎり', price: 120n, emoji: '🍙' },
-    { id: 'tire',   name: 'タイヤ',   price: 8000n, emoji: '🛞' },
-    { id: 'wheel',  name: '観覧車',   price: 3000000000n, emoji: '🎡' },
-    { id: 'moon',   name: '月',       price: 500n * 10n ** 12n, emoji: '🌕' },
-    { id: 'earth',  name: '地球',     price: 5n * 10n ** 16n, emoji: '🌍' },
-    { id: 'sun',    name: '太陽',     price: 10n ** 20n, emoji: '☀️' }
+    [ E('onigiri', 'つぶれたおにぎり', 120n, '🍙'), E('balloon', 'しぼんだ風船', 10n, '🎈') ],
+    [ E('tire', 'タイヤ', 8000n, '🛞'), E('pumpkin', 'かぼちゃ', 800n, '🎃'), E('ukiwa', 'うきわ', 1500n, '🛟') ],
+    [ E('wheel', '観覧車', 3000000000n, '🎡'), E('stadium', 'スタジアム', 100000000000n, '🏟️') ],
+    [ E('moon', '月', 500n * 10n ** 12n, '🌕'), E('comet', 'すい星', 100n * 10n ** 12n, '☄️') ],
+    [ E('earth', '地球', 5n * 10n ** 16n, '🌍'), E('saturn', '土星', 8n * 10n ** 16n, '🪐') ],
+    [ E('sun', '太陽', 10n ** 20n, '☀️'), E('sunface', 'わらう太陽', 2n * 10n ** 20n, '🌞') ]
   ]
 };
 const BH = { id: 'bh', name: 'ブラックホール', price: null, bh: true };
 const GROUPS = [['small', 'ちいさい まる'], ['mid', 'ふつうの まる'], ['big', 'おおきい まる']];
-const ALL = [...TABLE.small, ...TABLE.mid, ...TABLE.big, BH];
+const ALL = [...TABLE.small.flat(), ...TABLE.mid.flat(), ...TABLE.big.flat(), BH];
 
 /* ---------- お金の表示 ---------- */
 const UNITS = [['垓', 10n ** 20n], ['京', 10n ** 16n], ['兆', 10n ** 12n], ['億', 10n ** 8n], ['万', 10n ** 4n]];
@@ -370,9 +377,17 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
+function setTotal() {
+  const el = $('total');
+  el.textContent = fmt(shown);
+  el.style.fontSize = '';
+  if (el.scrollWidth <= el.clientWidth) return;
+  let fs = parseFloat(getComputedStyle(el).fontSize);
+  while (el.scrollWidth > el.clientWidth && fs > 11) { fs -= 1; el.style.fontSize = fs + 'px'; }
+}
 function setHud() {
   $('leftN').textContent = left;
-  $('total').textContent = fmt(shown);
+  setTotal();
 }
 function startGame() {
   audioOn();
@@ -439,7 +454,8 @@ function finishIfDone(delay) {
 function spawn(ev) {
   let rank = rankOf(ev.score), lucky = false;
   if (rank < 5 && Math.random() < 0.07) { rank++; lucky = true; }
-  const item = TABLE[ev.size][rank];
+  const pool = TABLE[ev.size][rank];
+  const item = pool[Math.floor(Math.random() * pool.length)];
   const m = Math.min(W, H);
   const r = Math.max(17, Math.min(m * 0.14, ev.R * 0.55));
   const x = Math.min(W - r, Math.max(r, ev.cx)), y = Math.min(floorY - r, Math.max(r, ev.cy));
@@ -610,7 +626,7 @@ function frame(now) {
     let step = diff / 5n;
     if (step === 0n) step = diff > 0n ? 1n : -1n;
     shown += step;
-    $('total').textContent = fmt(shown);
+    setTotal();
   }
   render();
   requestAnimationFrame(frame);
@@ -657,7 +673,7 @@ function card(it) {
 }
 function showZukan() {
   const body = $('zBody'); body.textContent = '';
-  const groups = GROUPS.map(([k, label]) => [label, TABLE[k]]);
+  const groups = GROUPS.map(([k, label]) => [label, TABLE[k].flat()]);
   groups.push(['とくべつ', [BH]]);
   for (const [label, items] of groups) {
     const h = document.createElement('h3'); h.textContent = label;
