@@ -153,7 +153,8 @@ const E = (id, name, price, emoji) => ({ id, name, price, emoji });
 const TABLE = {
   small: [
     [ { id: 'yen1', name: 'まがった1円玉', price: 1n, coin: coin('#dfe4e8', '#8f99a3', { label: '1', bent: true }) },
-      E('bubble', 'しゃぼん玉', 0n, '🫧'), E('naruto', 'なると', 15n, '🍥') ],
+      E('bubble', 'しゃぼん玉', 0n, '🫧'), E('naruto', 'なると', 15n, '🍥'),
+      E('stone', 'ただの石', 0n, '🪨'), E('tooth', 'ぬけた歯', 2n, '🦷') ],
     [ { id: 'yen5', name: '5円玉', price: 5n, coin: coin('#e0b84c', '#94731c', { hole: true }) },
       E('candy', 'あめ玉', 10n, '🍬'), E('berry', 'ブルーベリー', 20n, '🫐') ],
     [ { id: 'yen50', name: '50円玉', price: 50n, coin: coin('#d9dee3', '#858f99', { hole: true }) },
@@ -165,7 +166,8 @@ const TABLE = {
     [ E('medal', '金メダル', 1000000n, '🥇'), E('goldcoin', 'むかしの金貨', 2000000n, '🪙') ]
   ],
   mid: [
-    [ E('potato', 'じゃがいも', 30n, '🥔'), E('onion', 'たまねぎ', 60n, '🧅') ],
+    [ E('potato', 'じゃがいも', 30n, '🥔'), E('onion', 'たまねぎ', 60n, '🧅'),
+      E('unchi', 'うんち', 0n, '💩'), E('sock', 'かたっぽ靴下', 3n, '🧦'), E('banana', 'バナナの皮', 1n, '🍌') ],
     [ E('donut', 'ドーナツ', 150n, '🍩'), E('mikan', 'みかん', 50n, '🍊'), E('burger', 'ハンバーガー', 450n, '🍔') ],
     [ E('ball', 'ボール', 1000n, '⚽'), E('pancake', 'ホットケーキ', 600n, '🥞'), E('frisbee', 'フリスビー', 1200n, '🥏') ],
     [ E('pizza', 'ピザ', 2000n, '🍕'), E('suika', 'すいか', 2500n, '🍉'), E('basket', 'バスケットボール', 4000n, '🏀') ],
@@ -173,7 +175,8 @@ const TABLE = {
     [ E('crystal', '水晶玉', 3000000n, '🔮'), E('ufo', 'UFO', 50000000n, '🛸') ]
   ],
   big: [
-    [ E('onigiri', 'つぶれたおにぎり', 120n, '🍙'), E('balloon', 'しぼんだ風船', 10n, '🎈') ],
+    [ E('onigiri', 'つぶれたおにぎり', 120n, '🍙'), E('balloon', 'しぼんだ風船', 10n, '🎈'),
+      E('kettle', 'へこんだやかん', 20n, '🫖'), E('can', 'あきかん', 2n, '🥫'), E('paper', 'ペーパーのしん', 4n, '🧻'), E('web', 'くもの巣', 0n, '🕸️') ],
     [ E('tire', 'タイヤ', 8000n, '🛞'), E('pumpkin', 'かぼちゃ', 800n, '🎃'), E('ukiwa', 'うきわ', 1500n, '🛟') ],
     [ E('wheel', '観覧車', 3000000000n, '🎡'), E('stadium', 'スタジアム', 100000000000n, '🏟️') ],
     [ E('moon', '月', 500n * 10n ** 12n, '🌕'), E('comet', 'すい星', 100n * 10n ** 12n, '☄️') ],
@@ -181,9 +184,15 @@ const TABLE = {
     [ E('sun', '太陽', 10n ** 20n, '☀️'), E('sunface', 'わらう太陽', 2n * 10n ** 20n, '🌞') ]
   ]
 };
+/* げきレア: まるの大きさも出来も関係なく、1%で出る */
+const RARE_RATE = 0.01;
+const RARE = [
+  E('hiyoko', 'ひよこ', 7777n, '🐥'), E('neko', 'まんまるねこ', 77777n, '🐱'), E('fugu', 'ふぐ', 777777n, '🐡'),
+  E('panda', 'パンダ', 7777777n, '🐼'), E('alien', 'うちゅうじん', 77777777n, '👽')
+];
 const BH = { id: 'bh', name: 'ブラックホール', price: null, bh: true };
 const GROUPS = [['small', 'ちいさい まる'], ['mid', 'ふつうの まる'], ['big', 'おおきい まる']];
-const ALL = [...TABLE.small.flat(), ...TABLE.mid.flat(), ...TABLE.big.flat(), BH];
+const ALL = [...TABLE.small.flat(), ...TABLE.mid.flat(), ...TABLE.big.flat(), ...RARE, BH];
 
 /* ---------- お金の表示 ---------- */
 const UNITS = [['垓', 10n ** 20n], ['京', 10n ** 16n], ['兆', 10n ** 12n], ['億', 10n ** 8n], ['万', 10n ** 4n]];
@@ -454,7 +463,8 @@ function finishIfDone(delay) {
 function spawn(ev) {
   let rank = rankOf(ev.score), lucky = false;
   if (rank < 5 && Math.random() < 0.07) { rank++; lucky = true; }
-  const pool = TABLE[ev.size][rank];
+  const rare = Math.random() < RARE_RATE;
+  const pool = rare ? RARE : TABLE[ev.size][rank];
   const item = pool[Math.floor(Math.random() * pool.length)];
   const m = Math.min(W, H);
   const r = Math.max(17, Math.min(m * 0.14, ev.R * 0.55));
@@ -462,10 +472,11 @@ function spawn(ev) {
   bodies.push({ x, y, vx: (Math.random() - 0.5) * 1.2, vy: 0, r, rot: 0, item, age: 0, hold: 34, scale: 1 });
   total += item.price;
   record(item);
-  const color = rank === 0 ? '#ff9db0' : rank >= 3 ? '#ffd84a' : '#f4f1e4';
-  addLabel(x, y - r - 46, [item.name, fmt(item.price)], `まる度 ${ev.score}点${lucky ? '　ラッキー！' : ''}`, color);
-  puff(x, y, 8 + rank * 5, rank >= 3 ? '#ffd84a' : '#f4f1e4');
-  popSound(rank);
+  const color = rare ? '#8fe6ff' : rank === 0 ? '#ff9db0' : rank >= 3 ? '#ffd84a' : '#f4f1e4';
+  const note = rare ? '　げきレア！！' : lucky ? '　ラッキー！' : rank === 0 ? '　ハズレ！' : '';
+  addLabel(x, y - r - 46, [item.name, fmt(item.price)], `まる度 ${ev.score}点${note}`, color);
+  puff(x, y, rare ? 44 : 8 + rank * 5, rare ? '#8fe6ff' : rank >= 3 ? '#ffd84a' : '#f4f1e4');
+  popSound(rare ? 5 : rank);
   finishIfDone(1900);
 }
 function startHole(ev) {
@@ -674,6 +685,7 @@ function card(it) {
 function showZukan() {
   const body = $('zBody'); body.textContent = '';
   const groups = GROUPS.map(([k, label]) => [label, TABLE[k].flat()]);
+  groups.push(['げきレア', RARE]);
   groups.push(['とくべつ', [BH]]);
   for (const [label, items] of groups) {
     const h = document.createElement('h3'); h.textContent = label;
