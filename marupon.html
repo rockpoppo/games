@@ -720,7 +720,7 @@ function showResult() {
     makeCard(ttl, isNew && prev > 0n).toBlob(b => {
       if (!b || state !== 'result') return;
       try { shareFile = new File([b], 'marupon.jpg', { type: 'image/jpeg' }); } catch (e) { shareFile = null; }
-      if (canShareFile()) { $('aShare').textContent = '画像を シェア'; $('rTip').hidden = false; }
+      if (canShareFile()) $('aShare').textContent = '画像つきで シェア';
     }, 'image/jpeg', 0.92);
   } catch (e) {}
   $('result').classList.add('on');
@@ -768,7 +768,7 @@ $('aShare').addEventListener('click', e => {
   e.preventDefault();
   const href = $('aShare').href;
   try { navigator.clipboard.writeText(shareText).catch(() => {}); } catch (err) {}
-  navigator.share({ files: [shareFile] }).catch(err => {
+  navigator.share({ files: [shareFile], text: shareText }).catch(err => {
     if (!err || err.name !== 'AbortError') location.href = href;
   });
 });
