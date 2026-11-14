@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ロックポッポのらくがき黒板</title>
-<meta name="description" content="黒板のらくがきをさわると、ゲームがはじまります。">
+<meta name="description" content="黒板にはってある写真をさわると、ゲームがはじまります。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* 教室の黒板が1枚あるだけ。ゲームは黒板のらくがき。 */
+  /* 教室の黒板が1枚あるだけ。ゲームは、黒板にマグネットではった写真と、横のチョーク書き。 */
   --board:#1d4a38;
   --board-deep:#153729;
   --chalk:#f4f1e4;
@@ -26,31 +26,35 @@
 html,body{min-height:100%}
 body{background:var(--wood-dark);color:var(--chalk);font-family:var(--font-chalk);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
   padding:calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 10px) 0 calc(env(safe-area-inset-left) + 10px)}
-#board{flex:1;position:relative;border-radius:6px;border:3px solid #5f3c1c;padding:26px 54px 30px 22px;display:flex;flex-direction:column;gap:22px;overflow:hidden;background:
+#board{flex:1;position:relative;border-radius:6px;border:3px solid #5f3c1c;padding:26px 44px 30px 18px;display:flex;flex-direction:column;gap:22px;overflow:hidden;background:
   radial-gradient(120% 60% at 25% 12%,rgba(255,255,255,.07),transparent 60%),
   radial-gradient(90% 60% at 85% 95%,rgba(0,0,0,.2),transparent 60%),
   var(--board)}
 /* 消しあと */
-#board::before{content:"";position:absolute;left:-10%;right:-10%;top:38%;height:120px;background:linear-gradient(100deg,transparent,rgba(244,241,228,.05) 30%,rgba(244,241,228,.07) 55%,transparent);transform:rotate(-4deg);pointer-events:none}
+#board::before{content:"";position:absolute;left:-10%;right:-10%;top:52%;height:120px;background:linear-gradient(100deg,transparent,rgba(244,241,228,.05) 30%,rgba(244,241,228,.07) 55%,transparent);transform:rotate(-4deg);pointer-events:none}
 h1{font-weight:400;font-size:clamp(26px,8vw,40px);line-height:1.25;transform:rotate(-1.5deg);transform-origin:left;position:relative}
 h1 small{display:block;font-size:.55em;color:var(--chalk-dim)}
 h1 span{color:var(--yellow)}
 #say{font-size:clamp(15px,4.4vw,19px);color:var(--chalk-dim);transform:rotate(-1deg);transform-origin:left;position:relative}
 #say::before{content:"↓ ";color:var(--pink)}
 /* 右はしの日付と日直(たて書き) */
-#side{position:absolute;top:22px;right:12px;writing-mode:vertical-rl;font-size:15px;letter-spacing:.12em;color:var(--chalk-dim);display:flex;gap:18px;align-items:flex-start;white-space:nowrap}
+#side{position:absolute;top:22px;right:10px;writing-mode:vertical-rl;font-size:14px;letter-spacing:.12em;color:var(--chalk-dim);display:flex;gap:16px;align-items:flex-start;white-space:nowrap}
 #side .tcy{text-combine-upright:all;-webkit-text-combine:horizontal}
 #side b{font-weight:400;color:var(--chalk)}
-#doodles{list-style:none;flex:1;display:flex;flex-wrap:wrap;gap:26px 18px;align-content:flex-start;justify-content:space-evenly;position:relative}
-a.doodle{display:grid;justify-items:center;gap:2px;width:min(64vw,250px);color:inherit;text-decoration:none;position:relative;padding:6px;border-radius:14px;transform:rotate(var(--tilt,0deg))}
-a.doodle:focus-visible{outline:3px dashed var(--yellow);outline-offset:4px}
-a.doodle:active{transform:rotate(var(--tilt,0deg)) scale(.96)}
-.doodle svg{width:100%;height:auto;display:block;overflow:visible}
-.doodle .emoji{font-size:110px;line-height:1.2;filter:grayscale(.2)}
-.doodle .name{font-size:clamp(22px,6.4vw,28px);line-height:1.3;text-align:center}
-.doodle .name::after{content:"";display:block;height:5px;margin-top:2px;border-radius:3px;background:var(--yellow);opacity:.9;transform:rotate(-1deg)}
-.doodle .memo{font-size:14px;color:var(--chalk-dim);text-align:center;line-height:1.6;margin-top:4px}
-.doodle .fresh{position:absolute;top:0;left:-8px;color:var(--pink);font-size:17px;transform:rotate(-14deg)}
+#games{list-style:none;flex:1;display:grid;gap:34px;align-content:start;position:relative;padding-top:8px}
+a.game{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px;align-items:center;max-width:560px;color:inherit;text-decoration:none;border-radius:10px}
+a.game:focus-visible{outline:3px dashed var(--yellow);outline-offset:8px}
+a.game:active .photo{transform:rotate(var(--tilt,0deg)) scale(.97)}
+/* マグネットではった写真 */
+.photo{position:relative;background:#fbfaf5;padding:5px;border-radius:2px;box-shadow:0 5px 12px rgba(0,0,0,.45);transform:rotate(var(--tilt,0deg))}
+.photo img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;background:var(--board-deep)}
+.photo::before{content:"";position:absolute;left:50%;top:-9px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe98a,var(--yellow) 55%,#d9a91a);box-shadow:0 2px 4px rgba(0,0,0,.45);z-index:1}
+.photo .emoji{aspect-ratio:3/2;display:grid;place-items:center;font-size:64px;background:var(--board-deep)}
+.txt{position:relative}
+.txt .new{color:var(--pink);font-size:18px;letter-spacing:.08em;transform:rotate(-8deg);transform-origin:left;margin-bottom:2px}
+.txt .name{font-size:clamp(15px,4.9vw,26px);line-height:1.3;white-space:pre;display:inline-block}
+.txt .name::after{content:"";display:block;height:4px;margin-top:3px;border-radius:3px;background:var(--yellow);opacity:.9;transform:rotate(-1.5deg)}
+.txt .memo{font-size:13px;color:var(--chalk-dim);line-height:1.6;margin-top:8px;white-space:pre-line}
 #soon{align-self:flex-end;font-size:14px;color:rgba(244,241,228,.38);transform:rotate(2deg);position:relative}
 /* 粉受け */
 #tray{flex:none;margin:0 -10px;height:calc(34px + env(safe-area-inset-bottom));padding:0 18px env(safe-area-inset-bottom);background:linear-gradient(var(--wood),var(--wood-dark));border-top:3px solid #c98f55;box-shadow:0 -6px 12px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;position:relative}
@@ -59,72 +63,60 @@ a.doodle:active{transform:rotate(var(--tilt,0deg)) scale(.96)}
 #tray i:nth-child(2){width:26px;background:var(--yellow);transform:rotate(4deg)}
 #tray i:nth-child(3){width:34px;background:var(--pink);transform:rotate(-2deg)}
 #tray small{margin-left:auto;font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif;font-weight:700;font-size:11px;color:#f1dcc0}
-@media (prefers-reduced-motion:no-preference){
-  .doodle .wob{animation:wob 3.2s ease-in-out infinite;transform-origin:50% 50%;transform-box:fill-box}
-  @keyframes wob{50%{transform:rotate(3deg) scale(1.03)}}
-}
 </style>
 </head>
 <body>
 <main id="board">
   <h1><small>ロックポッポの</small>らくがき<span>黒板</span></h1>
-  <p id="say">らくがきを さわると あそべるよ</p>
+  <p id="say">しゃしんを さわると あそべるよ</p>
   <div id="side" aria-hidden="true"><span id="today"></span><span>日直　<b>ロックポッポ</b></span></div>
-  <ul id="doodles"></ul>
-  <p id="soon">つぎの らくがき、かんがえちゅう…</p>
+  <ul id="games"></ul>
+  <p id="soon">つぎの ゲーム、かんがえちゅう…</p>
 </main>
 <div id="tray"><i></i><i></i><i></i><small>© 2026 ロックポッポ</small></div>
 
-<!-- チョークのかすれ -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="chalk" x="-10%" y="-10%" width="120%" height="120%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n"/>
-    <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5"/>
-  </filter>
-</svg>
-
 <script>
 /* ゲームを増やすときは、ここに1つ足すだけ。
-   art は ART にある絵の名前か、絵文字1つ。 tilt はらくがきのかたむき(度)。 */
+   photo はゲーム画面の横長の写真(3:2)。なければ絵文字1つでもOK。
+   name と memo の \n は改行。 tilt は写真のかたむき(度)。 */
 const GAMES = [
   {
     path: 'marupon.html',
-    name: 'まるかいてポン',
+    name: 'まるかいて\nポン',
     memo: 'まるを かくと\nなにかが とびだす',
-    art: 'maru',
-    tilt: -3,
+    photo: 'shots/marupon.jpg',
+    tilt: -2.5,
     date: '2026-11-14'
   }
 ];
 
-const ART = {
-  maru:
-    '<svg viewBox="0 0 220 200" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#chalk)" aria-hidden="true">' +
-    '<g class="wob">' +
-    '<path d="M108 30C150 25 184 58 182 100C180 144 148 176 106 174C64 172 34 140 36 98C38 60 64 33 112 32" stroke="#f4f1e4" stroke-width="9"/>' +
-    '<path d="M48 134C32 106 37 68 62 47" stroke="#ffd84a" stroke-width="9"/>' +
-    '</g>' +
-    '<path d="M186 40L204 24M196 62L218 58M170 22L176 4" stroke="#ffd84a" stroke-width="5"/>' +
-    '<path d="M84 96C92 84 104 84 110 96C116 108 128 108 136 96" stroke="#ff9db0" stroke-width="5"/>' +
-    '<circle cx="88" cy="74" r="4" fill="#f4f1e4" stroke="none"/><circle cx="132" cy="74" r="4" fill="#f4f1e4" stroke="none"/>' +
-    '</svg>'
-};
-
-const fresh = d => (Date.now() - new Date(d + 'T00:00:00+09:00').getTime()) < 14 * 86400000;
-const box = document.getElementById('doodles');
+const isNew = d => (Date.now() - new Date(d + 'T00:00:00+09:00').getTime()) < 14 * 86400000;
+const box = document.getElementById('games');
 for (const g of GAMES) {
+  const flat = g.name.replace(/\n/g, '');
   const li = document.createElement('li');
   const a = document.createElement('a');
-  a.className = 'doodle'; a.href = g.path;
-  a.style.setProperty('--tilt', (g.tilt || 0) + 'deg');
-  a.setAttribute('aria-label', g.name + 'で あそぶ');
-  if (ART[g.art]) a.insertAdjacentHTML('beforeend', ART[g.art]);
-  else { const e = document.createElement('div'); e.className = 'emoji'; e.textContent = g.art; e.setAttribute('aria-hidden', 'true'); a.appendChild(e); }
+  a.className = 'game'; a.href = g.path;
+  a.setAttribute('aria-label', flat + 'で あそぶ');
+
+  const ph = document.createElement('div'); ph.className = 'photo';
+  ph.style.setProperty('--tilt', (g.tilt || 0) + 'deg');
+  if (/\.(jpe?g|png|webp)$/i.test(g.photo)) {
+    const im = document.createElement('img');
+    im.src = g.photo; im.alt = flat + 'の ゲーム画面'; im.width = 1080; im.height = 720;
+    ph.appendChild(im);
+  } else {
+    const e = document.createElement('div'); e.className = 'emoji'; e.textContent = g.photo; e.setAttribute('aria-hidden', 'true');
+    ph.appendChild(e);
+  }
+
+  const tx = document.createElement('div'); tx.className = 'txt';
+  if (isNew(g.date)) { const nw = document.createElement('div'); nw.className = 'new'; nw.textContent = 'NEW'; tx.appendChild(nw); }
   const n = document.createElement('div'); n.className = 'name'; n.textContent = g.name;
-  const m = document.createElement('div'); m.className = 'memo'; m.style.whiteSpace = 'pre-line'; m.textContent = g.memo;
-  a.append(n, m);
-  if (fresh(g.date)) { const f = document.createElement('div'); f.className = 'fresh'; f.textContent = 'かきたて！'; a.appendChild(f); }
-  li.appendChild(a); box.appendChild(li);
+  const m = document.createElement('div'); m.className = 'memo'; m.textContent = g.memo;
+  tx.append(n, m);
+
+  a.append(ph, tx); li.appendChild(a); box.appendChild(li);
 }
 
 /* 黒板の右はしに きょうの日付(日本時間) */
