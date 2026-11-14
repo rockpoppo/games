@@ -643,6 +643,54 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+/* ---------- シェア用の けっか画像 ---------- */
+let shareFile = null, shareText = '';
+function canShareFile() {
+  try { return !!(shareFile && navigator.canShare && navigator.canShare({ files: [shareFile] })); } catch (e) { return false; }
+}
+function makeCard(ttl, record) {
+  const S = 1200, c = document.createElement('canvas');
+  c.width = c.height = S;
+  const g = c.getContext('2d');
+  g.fillStyle = '#7a4f27'; g.fillRect(0, 0, S, S);
+  g.fillStyle = BOARD; g.fillRect(26, 26, S - 52, S - 52);
+  let sh = g.createRadialGradient(360, 240, 0, 360, 240, 900);
+  sh.addColorStop(0, 'rgba(255,255,255,.08)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = sh; g.fillRect(26, 26, S - 52, S - 52);
+  sh = g.createRadialGradient(960, 1080, 0, 960, 1080, 800);
+  sh.addColorStop(0, 'rgba(0,0,0,.2)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = sh; g.fillRect(26, 26, S - 52, S - 52);
+  const tray = g.createLinearGradient(0, S - 96, 0, S - 26);
+  tray.addColorStop(0, '#a9743f'); tray.addColorStop(1, '#7a4f27');
+  g.fillStyle = tray; g.fillRect(26, S - 96, S - 52, 70);
+  g.fillStyle = '#c98f55'; g.fillRect(26, S - 96, S - 52, 6);
+
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = '#f4f1e4'; g.font = `68px ${FONT_D}`;
+  g.fillText('まるかいてポン', S / 2, 130);
+  g.fillStyle = '#b9c9bd'; g.font = `36px ${FONT_D}`;
+  g.fillText('まるを 10かい かいて かせいだ おかね', S / 2, 215);
+  const money = fmt(total);
+  let fs = 170;
+  do { g.font = `${fs}px ${FONT_D}`; fs -= 6; } while (g.measureText(money).width > 1020 && fs > 40);
+  g.fillStyle = '#ffd84a'; g.fillText(money, S / 2, 375);
+  g.fillStyle = '#ff9db0'; g.font = `64px ${FONT_D}`;
+  g.fillText('「' + ttl + '」', S / 2, 530);
+  if (record) {
+    g.save(); g.translate(1010, 120); g.rotate(0.2);
+    g.font = `40px ${FONT_D}`; g.fillText('しんきろく！', 0, 0); g.restore();
+  }
+  got.forEach((it, i) => {
+    g.save();
+    g.translate(S / 2 + ((i % 5) - 2) * 196, 700 + Math.floor(i / 5) * 190);
+    drawItem(g, it, 66, 0.4);
+    g.restore();
+  });
+  g.fillStyle = '#b9c9bd'; g.font = `34px ${FONT_D}`;
+  g.fillText('rockpoppo.github.io/games', S / 2, 1050);
+  return c;
+}
+
 /* ---------- けっか・ずかん ---------- */
 function showResult() {
   state = 'result';
@@ -662,7 +710,18 @@ function showResult() {
     box.appendChild(im);
   }
   const text = `まるをかいて ${fmt(total)} かせいだ！ 称号「${ttl}」 #まるかいてポン`;
-  $('aShare').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(location.href.split('#')[0]);
+  const url = location.href.split('#')[0];
+  $('aShare').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+  /* 画像を共有できる端末(iPhoneなど)では、けっか画像つきで共有する。できない端末は文字だけのXシェア。 */
+  shareText = text + ' ' + url; shareFile = null;
+  $('aShare').textContent = '𝕏 でシェア';
+  try {
+    makeCard(ttl, isNew && prev > 0n).toBlob(b => {
+      if (!b || state !== 'result') return;
+      try { shareFile = new File([b], 'marupon.jpg', { type: 'image/jpeg' }); } catch (e) { shareFile = null; }
+      if (canShareFile()) $('aShare').textContent = '画像つきで シェア';
+    }, 'image/jpeg', 0.92);
+  } catch (e) {}
   $('result').classList.add('on');
   if (isNew) { tone(659, 0.15); tone(880, 0.3, 'triangle', 0.14, 1, 0.12); }
 }
@@ -703,6 +762,14 @@ $('bAgain').addEventListener('click', startGame);
 $('bZukan').addEventListener('click', showZukan);
 $('bZukan2').addEventListener('click', showZukan);
 $('bZClose').addEventListener('click', () => $('zukan').classList.remove('on'));
+$('aShare').addEventListener('click', e => {
+  if (!canShareFile()) return;
+  e.preventDefault();
+  const href = $('aShare').href;
+  navigator.share({ files: [shareFile], text: shareText }).catch(err => {
+    if (!err || err.name !== 'AbortError') location.href = href;
+  });
+});
 $('bSound').addEventListener('click', () => {
   muted = !muted;
   $('bSound').textContent = muted ? '🔇' : '🔊';
