@@ -720,7 +720,7 @@ function showResult() {
     makeCard(ttl, isNew && prev > 0n).toBlob(b => {
       if (!b || state !== 'result') return;
       try { shareFile = new File([b], 'marupon.jpg', { type: 'image/jpeg' }); } catch (e) { shareFile = null; }
-      if (canShareFile()) $('aShare').textContent = '画像つきで シェア';
+      if (canShareFile()) $('aShare').textContent = 'シェア';
     }, 'image/jpeg', 0.92);
   } catch (e) {}
   $('result').classList.add('on');
