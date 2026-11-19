@@ -124,8 +124,7 @@ h1 span{color:var(--yellow)}
       <button class="btn ghost" id="bZukan2" type="button">📖 ずかん</button>
       <a class="btn ghost" id="aShare" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet">𝕏 でシェア</a>
     </div>
-    <p class="best" id="rTip" hidden>文は じどうで コピーされるよ。<br>Xの 文字のところを ながおしして「ペースト」してね</p>
-    <a class="best" id="aText" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet" hidden style="color:var(--chalk-dim);text-decoration:underline;padding:8px">文だけで Xに シェアする</a>
+    <p class="best" id="rTip" hidden>文は コピーされるよ。Xで「ペースト」してね</p>
     <a class="btn ghost home" href="./" hidden>ほかの ゲーム ▶</a>
   </section>
 
@@ -714,15 +713,14 @@ function showResult() {
   const text = `まるをかいて ${fmt(total)} かせいだ！ 称号「${ttl}」 #まるかいてポン`;
   const url = location.href.split('#')[0];
   $('aShare').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
-  $('aText').href = $('aShare').href;
   /* 画像を共有できる端末(iPhoneなど)では、けっか画像つきで共有する。できない端末は文字だけのXシェア。 */
   shareText = text + ' ' + url; shareFile = null;
-  $('aShare').textContent = '𝕏 でシェア'; $('rTip').hidden = true; $('aText').hidden = true;
+  $('aShare').textContent = '𝕏 でシェア'; $('rTip').hidden = true;
   try {
     makeCard(ttl, isNew && prev > 0n).toBlob(b => {
       if (!b || state !== 'result') return;
       try { shareFile = new File([b], 'marupon.jpg', { type: 'image/jpeg' }); } catch (e) { shareFile = null; }
-      if (canShareFile()) { $('aShare').textContent = '画像つきで シェア'; $('rTip').hidden = false; $('aText').hidden = false; }
+      if (canShareFile()) $('aShare').textContent = '画像つきで シェア';
     }, 'image/jpeg', 0.92);
   } catch (e) {}
   $('result').classList.add('on');
@@ -770,7 +768,7 @@ $('aShare').addEventListener('click', e => {
   e.preventDefault();
   const href = $('aShare').href;
   try { navigator.clipboard.writeText(shareText).catch(() => {}); } catch (err) {}
-  navigator.share({ files: [shareFile] }).catch(err => {
+  navigator.share({ files: [shareFile], text: shareText }).catch(err => {
     if (!err || err.name !== 'AbortError') location.href = href;
   });
 });
